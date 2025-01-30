@@ -12,7 +12,7 @@ DEFAULT_SCROLL_WAIT_TIME_SEC = 0.02
 
 def search_text(chara):
     found = (-1, -1)
-    with open('chara_zenkaku.txt', mode='r', encoding="utf-8") as f:
+    with open('./chara_zenkaku/chara_zenkaku.txt', mode='r', encoding="utf-8") as f:
         lines = f.readlines()
         for i, line in enumerate(lines):
             if chara in line:
@@ -28,7 +28,7 @@ def search_img(line, num):
     x_size = 16
     y_size = 16
 
-    img = cv2.imread('chara_zenkaku.png')
+    img = cv2.imread('./chara_zenkaku/chara_zenkaku.png')
     x = x_offset + num * x_step
     y = y_offset + line * y_step
     img = img[y:y+y_size, x:x+x_size]
@@ -46,7 +46,7 @@ def search_string(string:str):
         if len(marge_image) == 0:
             marge_image = ret
         else:
-            padding = cv2.imread('padding.bmp')
+            padding = cv2.imread('./chara_zenkaku/padding.bmp')
             marge_image = cv2.hconcat([marge_image, padding, ret])
     
     # 画像をモノクロに変換
@@ -84,15 +84,15 @@ def scroll_line(console:serial.Serial, text: str):
         matrix = make_matrix_image(img)
         barray = matrix.tobytes()
         b64 = base64.b64encode(barray) + b'\r\n'
-        ser.write(b64)
+        console.write(b64)
         img = np.delete(img, 0, axis=1)
         time.sleep(DEFAULT_SCROLL_WAIT_TIME_SEC)
     
 if __name__ == '__main__':
-    com_port = 'COM8'
+    com_port = 'COM23'
     baudrate = 921600
     timeout = 1
 
     ser = serial.Serial(com_port, baudrate, timeout=timeout)
-    scroll_line(ser, "こんにちは")
+    scroll_line(ser, "あけましておめでとうございます。ことしもよろしくおねがいします。")
     ser.close()
